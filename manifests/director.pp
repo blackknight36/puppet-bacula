@@ -178,7 +178,6 @@ class bacula::director (
   if $manage_db or $manage_db_tables {
     case $db_backend {
       'mysql'  : {
-        include 'bacula::director::mysql'
         class { 'bacula::director::mysql':
           db_database   => $db_database,
           db_host       => $db_host,
