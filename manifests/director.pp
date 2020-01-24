@@ -175,10 +175,20 @@ class bacula::director (
     show_diff => false,
   }
 
-  if $manage_db {
+  if $manage_db or $manage_db_tables {
     case $db_backend {
       'mysql'  : {
         include 'bacula::director::mysql'
+        class { 'bacula::director::mysql':
+          db_database   => $db_database,
+          db_host       => $db_host,
+          db_password   => $db_password,
+          db_port       => $db_port,
+          db_user       => $db_user,
+          db_user_host  => $db_user_host,
+          db_package    => $db_package,
+          manage_db     => $manage_db,
+        }
       }
 
       'postgresql' : {
