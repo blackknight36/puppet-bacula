@@ -68,9 +68,9 @@ class bacula::director::mysql (
   $db_parameters = "--host=${db_host} --user=${db_user} --password=${db_password} --port=${db_port} --database=${db_database}"
 
   exec { 'make_db_tables':
-    command     => "${make_db_tables_command} ${db_parameters}",
+    command     => "${make_db_tables_command} ${db_parameters} && echo tables create at $(date) >/etc/bacula/tables_created",
     environment => "db_name=${db_database}",
-    refreshonly => true,
+    creates     => '/etc/bacula/tables_created',
     logoutput   => true,
     require     => Package[$db_package],
   }
