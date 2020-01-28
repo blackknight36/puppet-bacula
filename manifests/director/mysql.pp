@@ -69,6 +69,7 @@ class bacula::director::mysql (
 
   exec { 'make_db_tables':
     command     => "${make_db_tables_command} ${db_parameters}",
+    environment => "db_name=${db_database}",
     refreshonly => true,
     logoutput   => true,
     require     => Package[$db_package],
