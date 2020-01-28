@@ -305,6 +305,16 @@ Schedule {
   Run = Level=Incremental Mon-Sat at 23:05
 }
 
+# This does the catalog. It starts after the WeeklyCycle
+Schedule {
+  Name = "WeeklyCycleAfterBackup"
+  Run = Level=Full Monday at 23:10
+  Run = Level=Full Tuesday at 23:10
+  Run = Level=Full Wednesday at 23:10
+  Run = Level=Full Thursday at 23:10
+  Run = Level=Full Friday at 23:10
+}
+
 # These cycles are set up so that we can spread out the full backups of our
 # servers across the week. Some at the weekend, some mid-week.
 Schedule {
