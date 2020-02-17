@@ -8,6 +8,9 @@ bacula::common::plugin_dir: "%{hiera('bacula::plugin_dir')}"
 bacula::common::spool_dir:  'C:/ProgramData/Bacula/spool'
 
 bacula::client::client_package: 'bacula'
-bacula::client::var_dir:        "%{hiera('bacula::common::lib_dir')}"
+bacula::client::var_dir:        'C:/ProgramData/Bacula/lib'
 bacula::client::bacula_fd_conf: 'C:/Program Files/Bacula/bacula-fd.conf'
-
+bacula::client::puppet_ssl_dir: 'C:/ProgramData/PuppetLabs/puppet/etc/ssl'
+bacula::client::tls_ca_cert:    'C:/ProgramData/Bacula/lib/ssl/certs/ca.pem'
+bacula::client::tls_cert:       "C:/ProgramData/Bacula/lib/ssl/certs/%{fqdn}.pem"
+bacula::client::tls_key:        "C:/ProgramData/Bacula/lib/ssl/private_keys/%{fqdn}.pem"

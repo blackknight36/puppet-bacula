@@ -1,5 +1,9 @@
 ---
 bacula::client::client_package: bacula-fd
+bacula::client::tls_ca_cert:     '/var/lib/bacula/ssl/certs/ca.pem'
+bacula::client::tls_cert:        "/var/lib/bacula/ssl/certs/%{fqdn}.pem"
+bacula::client::tls_key:         "/var/lib/bacula/ssl/private_keys/%{fqdn}.pem"
+bacula::client::puppet_ssl_dir:  /var/lib/puppet/ssl
 
 bacula::director::director_package: bacula-director
 bacula::director::director_service: bacula-dir
@@ -10,4 +14,4 @@ bacula::director::postgresql::db_package: bacula-director-postgresql
 
 bacula::director::sqlite::db_package:      bacula-storage-sqlite
 
-bacula::storage::server_default:      "bacula.${::domain}"
+bacula::storage::server_default:      "bacula.%{domain}"

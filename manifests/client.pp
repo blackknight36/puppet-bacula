@@ -41,8 +41,8 @@ class bacula::client (
   String $working_dir               = $var_dir,
   Array[String] $tls_allowed_cn     = [],
   String $tls_ca_cert               = "${var_dir}/ssl/certs/ca.pem",
-  String $tls_key                   = "${var_dir}/ssl/private_keys/${::fqdn}.pem",
-  String $tls_cert                  = "${var_dir}/ssl/certs/${::fqdn}.pem",
+  String $tls_cert                  = "${var_dir}/ssl/certs/${fqdn}.pem",
+  String $tls_key                   = "${var_dir}/ssl/private_keys/${fqdn}.pem",
   Optional[String] $tls_ca_cert_dir = undef,
   Boolean $tls_require              = true,
   Boolean $tls_verify_peer          = true,
@@ -51,6 +51,7 @@ class bacula::client (
   Boolean $manage_pki_keypair       = true,
   String $pki_keypair               = "${var_dir}/ssl/encryption_keypair.pem",
   String $pki_master_key            = "${var_dir}/ssl/certs/master.crt",
+  String $puppet_ssl_dir            = '/etc/puppetlabs/puppet/ssl',
   ) {
 
   include 'bacula::common'
@@ -76,6 +77,41 @@ class bacula::client (
       source_te => 'puppet:///modules/bacula/selinux/bacula_fd_fix.te',
       before    => Service['bacula-fd'],
     }
+  }
+
+  # Use certs signed by the puppet CA as the default bacula certificates
+  # These files must be copied into place due to SELinux restrictions.
+  $tls_cert_path = dirname($tls_ca_cert)
+  $tls_key_path  = regsubst($tls_cert_path, 'certs', 'private_keys')
+
+  file {
+    default:
+        ensure => directory,
+    ;
+
+    [$tls_cert_path, $tls_key_path]:
+    ;
+  }
+
+  file {
+    default:
+        show_diff => false,
+    ;
+
+    $tls_ca_cert:
+        source  => "file://${puppet_ssl_dir}/certs/ca.pem",
+        require => File["${tls_cert_path}"],
+    ;
+
+    $tls_cert:
+        source  => "file://${puppet_ssl_dir}/certs/${fqdn}.pem",
+        require => File["${tls_cert_path}"],
+    ;
+
+    $tls_key:
+        source  => "file://${puppet_ssl_dir}/private_keys/${fqdn}.pem",
+        require => File["${tls_key_path}"],
+    ;
   }
 
   service { 'bacula-fd':

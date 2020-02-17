@@ -761,6 +761,9 @@ stored the custom template.
 
 # TODO
 
+* Add paths for the tls_key and tls_cert paramters into hiera.
+* Use puppet TLS certs by default.
+
 * Fix unit tests.  Integrate with TravisCI.
 * Add ability to create custom schedules.
 * Add ability to configure storage servers external to the director.

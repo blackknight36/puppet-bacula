@@ -1,5 +1,7 @@
 bacula::client::client_package: bacula-client
-bacula::director::director_package: bacula-director
+bacula::client::puppet_ssl_dir: /etc/puppetlabs/puppet/ssl
+bacula::client::tls_ca_cert: /var/lib/bacula/ssl/certs/ca.pem
 
+bacula::director::director_package: bacula-director
 bacula::director::sqlite::db_package: bacula-director
 bacula::director::postgresql::db_package: bacula-director

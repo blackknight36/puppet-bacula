@@ -2,10 +2,17 @@ require 'hiera'
 require 'spec_helper'
 
 describe 'bacula::client' do
-  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
-  hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
+  windows = {
+    :hardwaremodels => 'x64',
+    :supported_os   => [
+      {
+        'operatingsystem' => 'windows',
+        'operatingsystemrelease' => ['7', '10'],
+      },
+    ],
+  }
 
-  linux = {
+  redhat = {
     :hardwaremodels => 'x86_64',
     :supported_os   => [
       {
@@ -20,10 +27,11 @@ describe 'bacula::client' do
      ],
   }
 
-  on_supported_os(linux).each do |os, facts|
+  on_supported_os(redhat).each do |os, facts|
     let(:node) { 'example-host.example.com' }
 
     context "on #{os}" do
+
       let(:facts) do
         facts
       end
@@ -44,25 +52,26 @@ describe 'bacula::client' do
     end
   end
 
-  on_supported_os.each do |os, facts|
-    let(:node) { 'example-host.example.com' }
-
+  on_supported_os(redhat).each do |os, facts|
     context "on #{os}" do
+      let(:node) { 'example-host.example.com' }
+
       let(:facts) do
         facts
       end
 
-      package = hiera.lookup('bacula::client::client_package', nil, nil)
+      package        = 'bacula-client'
+      tls_ca_cert    = '/var/lib/bacula/ssl/certs/ca.pem'
+      tls_cert       = "/var/lib/bacula/ssl/certs/example-host.example.com.pem"
+      tls_key        = "/var/lib/bacula/ssl/private_keys/example-host.example.com.pem"
+      puppet_ssl_dir = facts[:operatingsystem] == 'Fedora' ? '/etc/puppet/ssl':'/etc/puppetlabs/puppet/ssl'
 
       it do
         is_expected.to contain_class('bacula::common')
       end
 
       it do
-        is_expected.to contain_package(package)
-            .with({
-              :ensure => 'installed',
-            })
+        is_expected.to contain_package(package) .with({ :ensure => 'installed' })
       end
 
       it do
@@ -83,6 +92,104 @@ describe 'bacula::client' do
               :hasrestart => true,
             })
             .that_requires('File[bacula-fd.conf]')
+      end
+
+      it do
+        is_expected.to contain_file(tls_ca_cert)
+            .with({
+              :show_diff => false,
+              :source => "file://#{puppet_ssl_dir}/certs/ca.pem",
+            })
+            .that_requires('File[/var/lib/bacula/ssl/certs]')
+      end
+
+      it do
+        is_expected.to contain_file(tls_cert)
+            .with({
+              :show_diff => false,
+              :source => "file://#{puppet_ssl_dir}/certs/#{node}.pem",
+            })
+            .that_requires('File[/var/lib/bacula/ssl/certs]')
+      end
+
+      it do
+        is_expected.to contain_file(tls_key)
+            .with({
+              :show_diff => false,
+              :source => "file://#{puppet_ssl_dir}/private_keys/#{node}.pem",
+            })
+            .that_requires('File[/var/lib/bacula/ssl/private_keys]')
+      end
+    end
+  end
+
+  on_supported_os(windows).each do |os, facts|
+    let(:node) { 'example-host.example.com' }
+
+    context "on #{os}" do
+      let(:facts) do
+        facts
+      end
+
+      puppet_ssl_dir = 'C:/ProgramData/PuppetLabs/puppet/etc/ssl'
+      tls_ca_cert    = 'C:/ProgramData/Bacula/lib/ssl/certs/ca.pem'
+      tls_cert       = "C:/ProgramData/Bacula/lib/ssl/certs/example-host.example.com.pem"
+      tls_key        = "C:/ProgramData/Bacula/lib/ssl/private_keys/example-host.example.com.pem"
+
+      it do
+        is_expected.to contain_class('bacula::common')
+      end
+
+      it do
+        is_expected.to contain_package('bacula') .with({ :ensure => 'installed' })
+      end
+
+      it do
+        is_expected.to contain_file('bacula-fd.conf')
+            .with({
+              :ensure => 'file',
+            })
+            .that_notifies('Service[bacula-fd]')
+            .that_requires('Package[bacula]')
+      end
+
+      it do
+        is_expected.to contain_service('bacula-fd')
+            .with({
+              :ensure     => 'running',
+              :enable     => true,
+              :hasstatus  => true,
+              :hasrestart => true,
+            })
+            .that_requires('File[bacula-fd.conf]')
+      end
+
+      it do
+        is_expected.to contain_file(tls_ca_cert)
+            .with({
+              :show_diff => false,
+              :source => "file://#{puppet_ssl_dir}/certs/ca.pem",
+            })
+            .that_requires('File[C:/ProgramData/Bacula/lib/ssl/certs]')
+      end
+
+      it do
+        is_expected.to contain_file(tls_cert)
+            .with({
+              :show_diff => false,
+              :source => "file://#{puppet_ssl_dir}/certs/#{node}.pem",
+            })
+            .that_requires('File[C:/ProgramData/Bacula/lib/ssl/certs]')
+      end
+
+
+      it do
+        is_expected.to contain_file(tls_key)
+            .with({
+              :show_diff => false,
+              :source => "file://#{puppet_ssl_dir}/private_keys/#{node}.pem",
+            })
+            .that_requires('File[C:/ProgramData/Bacula/lib/ssl/private_keys]')
       end
     end
   end
