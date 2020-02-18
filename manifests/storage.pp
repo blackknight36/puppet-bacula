@@ -33,9 +33,9 @@
 # limitations under the License.
 
 class bacula::storage (
-  String $console_password              = cache_data('bacula', 'console_password', extlib::random_password(32)),
+  String $console_password              = extlib::cache_data('bacula', 'console_password', extlib::random_password(32)),
   String $db_backend                    = 'sqlite',
-  String $director_password             = cache_data('bacula', 'director_password', extlib::random_password(32)),
+  String $director_password             = extlib::cache_data('bacula', 'director_password', extlib::random_password(32)),
   String $director_server               = $facts['fqdn'],
   String $var_dir                       = '/var/lib/bacula',
   String $pid_dir                       = $var_dir,

@@ -34,7 +34,7 @@ class bacula::client (
   String $var_dir                   = '/var/lib/bacula',
   String $bacula_fd_conf            = '/etc/bacula/bacula-fd.conf',
   String $client_package            = 'bacula-client',
-  String $director_password         = cache_data('bacula', 'director_password', extlib::random_password(32)),
+  String $director_password         = extlib::cache_data('bacula', 'director_password', extlib::random_password(32)),
   String $director_server           = "bacula.${facts['domain']}",
   String $pid_dir                   = $var_dir,
   String $plugin_dir                = '/usr/lib64/bacula',

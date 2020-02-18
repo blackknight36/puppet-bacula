@@ -28,7 +28,7 @@
 class bacula::director::mysql (
   String $db_database  = 'bacula',
   String $db_host      = 'localhost',
-  String $db_password  = cache_data('bacula', 'db_password', extlib::random_password(32)),
+  String $db_password  = extlib::cache_data('bacula', 'db_password', extlib::random_password(32)),
   String $db_port      = '3306',
   String $db_user      = 'bacula',
   String $db_user_host = 'localhost',

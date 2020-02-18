@@ -27,7 +27,7 @@
 
 class bacula::console (
   String $console_template          = 'bacula/bconsole.conf.erb',
-  String $director_password         = cache_data('bacula', 'director_password', extlib::random_password(32)),
+  String $director_password         = extlib::cache_data('bacula', 'director_password', extlib::random_password(32)),
   String $director_server           = $facts['fqdn'],
   String $tls_ca_cert               = '/var/lib/bacula/ssl/certs/ca.pem',
   Optional[String] $tls_ca_cert_dir = undef,
