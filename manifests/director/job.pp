@@ -41,7 +41,7 @@
 # [*jobdefs*]
 #   Job definition used by bacula to configure this job.
 #
-# [*schedule*]
+# [*job_schedule*]
 #   Schedule used to manage when the job runs.  This schedule must be created using
 #   a bacula::director::schedule resource or a custom include file.
 #
@@ -51,7 +51,7 @@
 #     ensure   => file,
 #     client   => 'host.example.com',
 #     jobdefs  => 'Default',
-#     schedule => 'FirstWeeklyCycle',
+#     job_schedule => 'FirstWeeklyCycle',
 #   }
 
 define bacula::director::job (
@@ -62,7 +62,7 @@ define bacula::director::job (
     Optional[String] $jobname = undef,
     Optional[String] $jobdefs = undef,
     Optional[String] $fileset = undef,
-    Optional[String] $schedule = undef,
+    Optional[String] $job_schedule = undef,
     Optional[String] $storage = undef,
     Optional[String] $messages = undef,
     Optional[String] $pool = undef,
