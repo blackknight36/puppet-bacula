@@ -50,7 +50,6 @@ class bacula::director::mysql (
       password => $db_password,
       host     => $db_user_host,
       grant    => ['ALL'],
-      # notify    => Exec['make_db_tables'],
       before   => Exec['make_db_tables'],
     }
 

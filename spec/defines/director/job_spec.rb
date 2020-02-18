@@ -1,9 +1,24 @@
 require 'spec_helper'
 
 describe 'bacula::director::job' do
+  linux = {
+    :hardwaremodels => 'x86_64',
+    :supported_os   => [
+      {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
+        'operatingsystem'        => 'RedHat',
+      },
+      {
+        'operatingsystem'        => 'Fedora',
+      },
+     ],
+  }
+
   let(:title) { 'File_Server_Easily_Compressed' }
 
-  on_supported_os.each do |os, facts|
+  on_supported_os(linux).each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts

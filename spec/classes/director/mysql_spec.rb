@@ -1,17 +1,28 @@
-require 'hiera'
 require 'spec_helper'
 
 describe 'bacula::director::mysql' do
-  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
-  hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
+  linux = {
+    :hardwaremodels => 'x86_64',
+    :supported_os   => [
+      {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
+        'operatingsystem'        => 'RedHat',
+      },
+      {
+        'operatingsystem'        => 'Fedora',
+      },
+     ],
+  }
 
-  on_supported_os.each do |os, facts|
+  on_supported_os(linux).each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts.merge({ :osfamily => 'RedHat' })
       end
 
-      p = hiera.lookup('bacula::director::mysql::db_package', nil, nil)
+      p = 'bacula-storage-mysql'
 
       it do
         is_expected.to contain_package(p)
@@ -31,14 +42,12 @@ describe 'bacula::director::mysql' do
       it do
         is_expected.to contain_exec('make_db_tables')
             .with({
-              #'command'     => %r{--host=localhost --user= --password=\w* --port=3306 --database=bacula},
-              'refreshonly' => true,
-              'logoutput'   => true,
+              :environment  => 'db_name=bacula',
+              :creates      => '/etc/bacula/tables_created',
+              :logoutput    => true,
             })
-            #'require' => 'Package[$::bacula::params::director_mysql_package]',
-            #'before' => 'Service[bacula-dir]',
+            .that_requires('Package[bacula-storage-mysql]')
       end
-
     end
   end
 end

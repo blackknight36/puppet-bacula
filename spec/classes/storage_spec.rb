@@ -6,20 +6,18 @@ describe 'bacula::storage' do
     :hardwaremodels => 'x86_64',
     :supported_os   => [
       {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
         'operatingsystem'        => 'RedHat',
-        'operatingsystemrelease' => ['6', '7', '8'],
       },
       {
         'operatingsystem'        => 'Fedora',
-        'operatingsystemrelease' => ['30'],
       },
     ],
   }
 
-  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
-  hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
-
-  storage_package = hiera.lookup('bacula::storage::storage_package', nil, nil)
+  storage_package = 'bacula-storage'
 
   on_supported_os(redhat).each do |os, facts|
     context "on #{os}" do
@@ -41,7 +39,7 @@ describe 'bacula::storage' do
     end
   end
 
-  on_supported_os.each do |os, facts|
+  on_supported_os(redhat).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
 

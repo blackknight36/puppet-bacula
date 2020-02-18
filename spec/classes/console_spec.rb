@@ -1,11 +1,7 @@
-require 'hiera'
 require 'spec_helper'
 
 describe 'bacula::console' do
-  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
-  hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
-
-  package = hiera.lookup('bacula::console::package', nil, nil)
+  package = 'bacula-console'
 
   it do
     is_expected.to contain_package(package)
@@ -37,5 +33,4 @@ describe 'bacula::console' do
         })
         .that_requires("Package[#{package}]")
   end
-
 end

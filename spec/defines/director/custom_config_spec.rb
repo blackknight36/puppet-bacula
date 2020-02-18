@@ -1,18 +1,30 @@
 require 'spec_helper'
 
 describe 'bacula::director::custom_config' do
+  linux = {
+    :hardwaremodels => 'x86_64',
+    :supported_os   => [
+      {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
+        'operatingsystem'        => 'RedHat',
+      },
+      {
+        'operatingsystem'        => 'Fedora',
+      },
+     ],
+  }
+
   let(:title) { 'client-config' }
 
-  on_supported_os.each do |os, facts|
+  on_supported_os(linux).each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts
       end
 
       let(:params) {{
-          #:ensure => 'file',
-          #:director_server => :undef,
-          #:content => :undef,
           :source => 'puppet:///modules/bacula/custom-config.conf',
       }}
 
@@ -23,7 +35,6 @@ describe 'bacula::director::custom_config' do
               'owner' => 'bacula',
               'group' => 'bacula',
               'mode' => '0640',
-              #'content' => [],
               :source => 'puppet:///modules/bacula/custom-config.conf',
             })
             .that_requires('File[/etc/bacula/bacula-dir.conf]')

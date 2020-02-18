@@ -1,11 +1,22 @@
-require 'hiera'
 require 'spec_helper'
 
 describe 'bacula::director' do
-  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
-  hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
+  redhat = {
+    :hardwaremodels => 'x86_64',
+    :supported_os   => [
+      {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
+        'operatingsystem'        => 'RedHat',
+      },
+      {
+        'operatingsystem'        => 'Fedora',
+      },
+     ],
+  }
 
-  on_supported_os.each do |os, facts|
+  on_supported_os(redhat).each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts
@@ -15,7 +26,7 @@ describe 'bacula::director' do
         :manage_config_dir => true,
       }}
 
-      p = hiera.lookup('bacula::director::director_package', nil, nil)
+      p = 'bacula-director'
 
       it do
         is_expected.to contain_package(p)

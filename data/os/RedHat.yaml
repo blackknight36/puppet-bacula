@@ -5,3 +5,6 @@ bacula::client::tls_ca_cert: /var/lib/bacula/ssl/certs/ca.pem
 bacula::director::director_package: bacula-director
 bacula::director::sqlite::db_package: bacula-director
 bacula::director::postgresql::db_package: bacula-director
+
+bacula::director::postgresql::db_package: bacula-director-postgresql
+bacula::director::sqlite::db_package:      bacula-storage-sqlite

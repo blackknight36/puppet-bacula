@@ -1,9 +1,24 @@
 require 'spec_helper'
 
 describe 'bacula' do
+  redhat = {
+    :hardwaremodels => 'x86_64',
+    :supported_os   => [
+      {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
+        'operatingsystem'        => 'RedHat',
+      },
+      {
+        'operatingsystem'        => 'Fedora',
+      },
+     ],
+  }
+
   let(:node) { 'bacula.example.com' }
 
-  on_supported_os.each do |os, facts|
+  on_supported_os(redhat).each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts
@@ -14,8 +29,7 @@ describe 'bacula' do
           is_expected.to contain_class('bacula::common')
               .with({
                 'manage_config_dir' => false,
-                'manage_db_tables' => true,
-                'plugin_dir' => '/usr/lib64/bacula',
+                'manage_db_tables'  => true,
               })
         end
       end

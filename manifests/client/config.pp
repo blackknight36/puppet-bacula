@@ -182,7 +182,8 @@ define bacula::client::config (
   Boolean $use_tls                      = false,
   ) {
 
-  include 'bacula::director'
+  include 'bacula::console'
+  #include 'bacula::director'
 
   file { "/etc/bacula/bacula-dir.d/${name}.conf":
     ensure    => $ensure,
@@ -190,7 +191,6 @@ define bacula::client::config (
     group     => 'bacula',
     mode      => '0640',
     content   => template('bacula/client_config.erb'),
-    before    => Service['bacula-dir'],
     notify    => Exec['bacula-dir reload'],
     show_diff => false,
   }

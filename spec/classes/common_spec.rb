@@ -5,8 +5,13 @@ describe 'bacula::common' do
     :hardwaremodels => 'x86_64',
     :supported_os   => [
       {
+        'operatingsystem'        => 'CentOS',
+      },
+      {
         'operatingsystem'        => 'RedHat',
-        'operatingsystemrelease' => ['7', '8'],
+      },
+      {
+        'operatingsystem'        => 'Fedora',
       },
     ],
   }
@@ -55,10 +60,9 @@ describe 'bacula::common' do
             .with({
               :ensure  => 'directory',
               :owner   => 'bacula',
-              :group   => 'bacula',
+              :group   => 'root',
               :mode    => '0775',
             })
-            .that_requires('Package[bacula-common]')
       end
 
       it do

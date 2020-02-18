@@ -51,7 +51,10 @@ class bacula::common (
     # See https://danwalsh.livejournal.com/69478.html for more details on
     # the root cause of this failure
     file { $lib_dir:
-        mode => '0775',
+        ensure  => 'directory',
+        owner   => 'bacula',
+        group   => 'root',
+        mode    => '0775',
     }
   }
 

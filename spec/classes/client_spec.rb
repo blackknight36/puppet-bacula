@@ -1,4 +1,3 @@
-require 'hiera'
 require 'spec_helper'
 
 describe 'bacula::client' do
@@ -17,9 +16,11 @@ describe 'bacula::client' do
     :supported_os   => [
       {
         'operatingsystem'        => 'CentOS',
+        'operatingsystemrelease' => ['6', '7', '8'],
       },
       {
         'operatingsystem'        => 'RedHat',
+        'operatingsystemrelease' => ['6', '7', '8'],
       },
       {
         'operatingsystem'        => 'Fedora',
@@ -31,7 +32,6 @@ describe 'bacula::client' do
     let(:node) { 'example-host.example.com' }
 
     context "on #{os}" do
-
       let(:facts) do
         facts
       end

@@ -32,16 +32,13 @@ class bacula::director::sqlite (
 
   include 'bacula::common'
 
-  package { $db_package:
-    ensure => installed,
-  }
+  ensure_resource('package', $db_package, {'ensure' => 'installed'})
 
   sqlite::db { $db_database:
     ensure   => present,
     location => "/var/lib/bacula/${db_database}.db",
     owner    => 'bacula',
     group    => 'bacula',
-    require  => File['/var/lib/bacula'],
     notify   => Exec['make_db_tables'],
   }
 

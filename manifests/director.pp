@@ -121,24 +121,24 @@ class bacula::director (
     require => Package[$director_package],
   }
 
-  if defined('$plugin_dir') {
-    $file_requires = File[
-      '/etc/bacula/bacula-dir.d',
-      '/etc/bacula/bacula-dir.d/empty.conf',
-      '/var/lib/bacula',
-      '/var/log/bacula',
-      '/var/spool/bacula',
-      $plugin_dir]
-  }
+  #if defined('$plugin_dir') {
+  #  $file_requires = File[
+  #    '/etc/bacula/bacula-dir.d',
+  #    '/etc/bacula/bacula-dir.d/empty.conf',
+  #    $var_dir,
+  #    '/var/log/bacula',
+  #    '/var/spool/bacula',
+  #    $plugin_dir]
+  #}
 
-  else {
-    $file_requires = File[
-      '/etc/bacula/bacula-dir.d',
-      '/etc/bacula/bacula-dir.d/empty.conf',
-      '/var/lib/bacula',
-      '/var/log/bacula',
-      '/var/spool/bacula']
-  }
+  #else {
+  #  $file_requires = File[
+  #    '/etc/bacula/bacula-dir.d',
+  #    '/etc/bacula/bacula-dir.d/empty.conf',
+  #    #'/var/lib/bacula',
+  #    '/var/log/bacula',
+  #    '/var/spool/bacula']
+  #}
 
   $purge_script_ensure = $use_vol_purge_script ? {
     true    => file,
@@ -171,7 +171,7 @@ class bacula::director (
     group     => 'bacula',
     mode      => '0640',
     content   => template($dir_template),
-    require   => $file_requires,
+    #require   => $file_requires,
     before    => Service['bacula-dir'],
     notify    => Exec['bacula-dir reload'],
     show_diff => false,
@@ -187,7 +187,6 @@ class bacula::director (
           db_port       => $db_port,
           db_user       => $db_user,
           db_user_host  => $db_user_host,
-          db_package    => $db_package,
           manage_db     => $manage_db,
         }
       }
