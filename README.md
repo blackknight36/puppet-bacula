@@ -761,7 +761,6 @@ stored the custom template.
 
 # TODO
 
-* Fix unit tests.  Integrate with TravisCI.
 * Add ability to create custom schedules.
 * Add ability to configure storage servers external to the director.
 * Add ability to configure multiple pools on a storage server
