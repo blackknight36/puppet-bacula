@@ -10,6 +10,7 @@ group :test do
     gem "metadata-json-lint"
     gem 'puppet-syntax'
     gem 'puppet-lint'
+    gem 'rspec-puppet-facts'
 end
 
 # to disable installing the 50+ gems this group contains run : bundle install --without integration
