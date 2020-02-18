@@ -1,31 +1,33 @@
-source "https://rubygems.org"
+# This file is part of the blackknight36-snmp puppet module.
+# Copyright 2020 Michael Watters <wattersm@watters.ws>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-group :test do
-    gem "rake"
-    gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 4.2.3'
-    gem "rspec-puppet"
-    gem "puppetlabs_spec_helper"
-    gem 'rspec-puppet-utils'
-    gem 'hiera-puppet-helper', :git => 'https://github.com/bobtfish/hiera-puppet-helper.git'
-    gem "metadata-json-lint"
-    gem 'puppet-syntax'
-    gem 'puppet-lint'
-    gem 'rspec-puppet-facts'
-end
+source 'https://rubygems.org'
 
-# to disable installing the 50+ gems this group contains run : bundle install --without integration
-group :integration do
-    gem "beaker"
-    gem "beaker-rspec"
-    gem "vagrant-wrapper"
-    gem 'serverspec'
-end
+puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['= 5.0.0']
 
-group :development do
-    gem "travis"
-    gem "travis-lint"
-    gem "puppet-blacksmith"
-    gem 'puppet-debugger'
-# This gem causes bundler install erorrs
-#    gem "guard-rake"
-end
+gem "rake", "~> 12.0"
+
+gem 'puppet', puppetversion
+gem "puppetlabs_spec_helper", "~> 2.2"
+
+gem 'rspec', '>= 3.4.4'
+gem 'rspec-puppet', '>= 2.1.0'
+gem 'rspec-puppet-facts', '>= 1.8.0'
+gem 'rspec-puppet-utils', '>= 3.4.0'
+
+gem "beaker", "~> 3.17"
+gem "beaker-rspec", "~> 6.1"
+gem "beaker-puppet_install_helper", "~> 0.7.1"
+
+gem "serverspec", "~> 2.39"
+
+gem "puppet-syntax", "~> 2.4"
+gem "puppet-lint", "~> 2.2"
+gem "metadata-json-lint", "~> 2.0.1"
+gem "yaml-lint", "~> 0.0.9"
+
+gem "puppet-strings", "~> 1.1.0"
+
+# Coveralls.io coverage report
+gem 'coveralls', require: false
