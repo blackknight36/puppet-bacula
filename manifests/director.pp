@@ -42,14 +42,14 @@ class bacula::director (
   String $director_server                   = $facts['fqdn'],
   String $director_service                  = 'bacula-dir',
   String $mail_command                      = "/usr/sbin/bsmtp -h localhost -f bacula@${::fqdn} -s \\\"Bacula %t %e (for %c)\\\" %r",
-  Optional[String] $mail_to                 = undef,
-  Optional[String] $mail_to_daemon          = undef,
-  Optional[String] $mail_to_on_error        = undef,
-  Optional[String] $mail_to_operator        = undef,
+  String $mail_to                           = 'root@localhost',
+  String $mail_to_daemon                    = $mail_to,
+  String $mail_to_on_error                  = $mail_to,
+  String $mail_to_operator                  = $mail_to,
   Boolean $manage_config_dir                = false,
   Boolean $manage_db                        = true,
   Boolean $manage_db_tables                 = true,
-  Optional[Boolean] $manage_logwatch        = undef,
+  Boolean $manage_logwatch                  = false,
   String $operator_command                  = "/usr/sbin/bsmtp -h localhost -f bacula@${::fqdn} -s \\\"Bacula Intervention Required (for %c)\\\" %r",
   String $var_dir                           = '/var/lib/bacula',
   String $pid_dir                           = $var_dir,
@@ -57,10 +57,10 @@ class bacula::director (
   String $working_dir                       = $var_dir,
   String $storage_server                    = "bacula.${facts['domain']}",
   Array[String] $tls_allowed_cn             = [],
-  Optional[String] $tls_ca_cert             = undef,
   Optional[String] $tls_ca_cert_dir         = undef,
-  Optional[String] $tls_cert                = undef,
-  Optional[String] $tls_key                 = undef,
+  String $tls_ca_cert                       = "${var_dir}/ssl/certs/ca.pem",
+  String $tls_cert                          = "${var_dir}/ssl/certs/${fqdn}.pem",
+  String $tls_key                           = "${var_dir}/ssl/private_keys/${fqdn}.pem",
   Boolean $tls_require                      = true,
   Boolean $tls_verify_peer                  = true,
   Boolean $use_tls                          = false,
@@ -90,6 +90,10 @@ class bacula::director (
 
   if $use_puppet_certs {
     include 'bacula::ssl::puppet'
+  }
+
+  if $manage_logwatch {
+    include 'bacula::director::logwatch'
   }
 
   if $clients {
@@ -198,11 +202,21 @@ class bacula::director (
       }
 
       'postgresql' : {
-        include 'bacula::director::postgresql'
+        class { 'bacula::director::postgresql':
+          db_database   => $db_database,
+          db_host       => $db_host,
+          db_password   => $db_password,
+          db_port       => $db_port,
+          db_user       => $db_user,
+          db_user_host  => $db_user_host,
+          manage_db     => $manage_db,
+        }
       }
 
       'sqlite' : {
-        include 'bacula::director::sqlite'
+        class { 'bacula::director::sqlite':
+          db_database   => $db_database,
+        }
       }
 
       default  : {

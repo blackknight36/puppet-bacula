@@ -10,7 +10,7 @@
 # === Actions:
 # * Enforce the DB component package package be installed
 # * Manage the <tt>/etc/bacula/bacula-sd.conf</tt> file
-# * Manage the <tt>${storage_default_mount}+ and <tt>${storage_default_mount}/default</tt> directories
+# * Manage the <tt>${default_mount}+ and <tt>${default_mount}/default</tt> directories
 # * Manage the <tt>/etc/bacula/bacula-sd.conf</tt> file
 # * Enforce the <tt>bacula-sd</tt> service to be running
 #
@@ -35,13 +35,13 @@
 class bacula::storage (
   String $console_password              = extlib::cache_data('bacula', 'console_password', extlib::random_password(32)),
   String $db_backend                    = 'sqlite',
+  String $default_mount                 = '/mnt/bacula',
   String $director_password             = extlib::cache_data('bacula', 'director_password', extlib::random_password(32)),
   String $director_server               = $facts['fqdn'],
   String $var_dir                       = '/var/lib/bacula',
   String $pid_dir                       = $var_dir,
   Optional[String] $plugin_dir          = '/usr/lib64/bacula',
   String $working_dir                   = $var_dir,
-  String $storage_default_mount         = '/mnt/bacula',
   String $storage_server                = $director_server,
   String $storage_package               = 'bacula-storage',
   String $storage_template              = 'bacula/bacula-sd.conf.erb',
@@ -56,7 +56,7 @@ class bacula::storage (
   Boolean $block_checksum               = true,
   Hash $storage_device_hash_default     = { 'DefaultFileStorage' => {
     'Media Type'       => 'File',
-    'Archive Device'   => "$storage_default_mount/default",
+    'Archive Device'   => "$default_mount/default",
     'Label Media'      => yes,
     'Random Access'    => yes,
     'Automatic Mount'  => yes,
@@ -83,7 +83,7 @@ class bacula::storage (
     ensure => installed,
   }
 
-  file { $storage_default_mount:
+  file { $default_mount:
     ensure  => directory,
     owner   => 'bacula',
     group   => 'bacula',
@@ -100,7 +100,7 @@ class bacula::storage (
         group   => 'bacula',
         mode    => '0755',
         seltype => 'bacula_store_t',
-        require => [Package[$storage_package],File[$storage_default_mount]],
+        require => [Package[$storage_package],File[$default_mount]],
       })
     }
   }
@@ -115,7 +115,7 @@ class bacula::storage (
               group   => 'bacula',
               mode    => '0755',
               seltype => 'bacula_store_t',
-              require => [Package[$storage_package],File[$storage_default_mount]],
+              require => [Package[$storage_package],File[$default_mount]],
             })
           }
         }
@@ -123,7 +123,7 @@ class bacula::storage (
     }
   }
   if $facts['osfamily'] == 'RedHat' and $facts['selinux'] {
-    selinux::fcontext { "${storage_default_mount}(/.*)?":
+    selinux::fcontext { "${default_mount}(/.*)?":
       seltype => 'bacula_store_t',
     }
   }
@@ -146,12 +146,12 @@ class bacula::storage (
   $file_requires = $plugin_dir ? {
     undef   => File[
       '/etc/bacula/bacula-sd.d/empty.conf',
-      "${storage_default_mount}/default",
+      "${default_mount}/default",
       '/var/lib/bacula'
     ],
     default => File[
       '/etc/bacula/bacula-sd.d/empty.conf',
-      "${storage_default_mount}/default",
+      "${default_mount}/default",
       '/var/lib/bacula',
       $plugin_dir
     ],
