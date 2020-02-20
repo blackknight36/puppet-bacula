@@ -63,8 +63,8 @@ class bacula::storage (
     'Removable Media ' => no,
     'Always Open'      => no,
     'Block Checksum'   => $block_checksum ? {
-      default => yes,
-      no      => no,
+      default => 'yes',
+      false   => 'no',
     },
   },},
   Hash $storage_device_hash             = {},
