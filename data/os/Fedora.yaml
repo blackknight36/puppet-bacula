@@ -1,2 +1,2 @@
 ---
-bacula::client::puppet_ssl_dir: '/etc/puppet/ssl'
+bacula::ssl::puppet::puppet_ssl_dir: '/etc/puppet/ssl'

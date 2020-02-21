@@ -10,7 +10,8 @@ bacula::common::spool_dir:  'C:/ProgramData/Bacula/spool'
 bacula::client::client_package: 'bacula'
 bacula::client::var_dir:        'C:/ProgramData/Bacula/lib'
 bacula::client::bacula_fd_conf: 'C:/Program Files/Bacula/bacula-fd.conf'
-bacula::client::puppet_ssl_dir: 'C:/ProgramData/PuppetLabs/puppet/etc/ssl'
-bacula::client::tls_ca_cert:    'C:/ProgramData/Bacula/lib/ssl/certs/ca.pem'
-bacula::client::tls_cert:       "C:/ProgramData/Bacula/lib/ssl/certs/%{fqdn}.pem"
-bacula::client::tls_key:        "C:/ProgramData/Bacula/lib/ssl/private_keys/%{fqdn}.pem"
+
+bacula::ssl::puppet::puppet_ssl_dir: 'C:/ProgramData/PuppetLabs/puppet/etc/ssl'
+bacula::ssl::puppet::tls_ca_cert:    'C:/ProgramData/Bacula/lib/ssl/certs/ca.pem'
+bacula::ssl::puppet::tls_cert:       "C:/ProgramData/Bacula/lib/ssl/certs/%{fqdn}.pem"
+bacula::ssl::puppet::tls_key:        "C:/ProgramData/Bacula/lib/ssl/private_keys/%{fqdn}.pem"
