@@ -52,6 +52,26 @@ describe 'bacula::director' do
       #  end
       #end
 
+      context 'Use Puppet certificates by default' do
+        let(:params) {{
+          :use_puppet_certs => true,
+        }}
+
+        it do
+          is_expected.to contain_class('bacula::ssl::puppet')
+        end
+      end
+
+      context 'Do not use Puppet certificates by default' do
+        let(:params) {{
+          :use_puppet_certs => false,
+        }}
+
+        it do
+          is_expected.not_to contain_class('bacula::ssl::puppet')
+        end
+      end
+
       it do
         is_expected.to contain_file('/etc/bacula/bacula-dir.d')
             .with({
@@ -169,6 +189,5 @@ describe 'bacula::director' do
             .that_requires('File[/etc/bacula/bacula-dir.conf]')
       end
    end
-
  end
 end

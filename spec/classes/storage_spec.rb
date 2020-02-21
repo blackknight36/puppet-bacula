@@ -1,4 +1,3 @@
-require 'hiera'
 require 'spec_helper'
 
 describe 'bacula::storage' do
@@ -44,6 +43,26 @@ describe 'bacula::storage' do
       let(:facts) { facts }
 
       it { is_expected.to contain_class('bacula::common') }
+
+      context 'Use Puppet certificates by default' do
+        let(:params) {{
+          :use_puppet_certs => true,
+        }}
+
+        it do
+          is_expected.to contain_class('bacula::ssl::puppet')
+        end
+      end
+
+      context 'Do not use Puppet certificates by default' do
+        let(:params) {{
+          :use_puppet_certs => false,
+        }}
+
+        it do
+          is_expected.not_to contain_class('bacula::ssl::puppet')
+        end
+      end
 
       it do
         is_expected.to contain_package(storage_package)
@@ -94,7 +113,6 @@ describe 'bacula::storage' do
               :owner     => 'bacula',
               :group     => 'bacula',
               :mode      => '0640',
-              :show_diff => false,
             })
             .that_requires("Package[#{storage_package}]")
             .that_notifies('Service[bacula-sd]')

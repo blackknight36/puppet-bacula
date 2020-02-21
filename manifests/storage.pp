@@ -16,7 +16,7 @@
 #
 # === Copyright
 #
-# Copyright 2018 Michael Watters
+# Copyright 2020 Michael Watters
 #
 # === License
 #
@@ -69,9 +69,14 @@ class bacula::storage (
   },},
   Hash $storage_device_hash             = {},
   Array $storage_hash                   = [],
+  Boolean $use_puppet_certs             = true,
   ) {
 
   include 'bacula::common'
+
+  if $use_puppet_certs {
+    include 'bacula::ssl::puppet'
+  }
 
   $_storage_device_hash = $storage_device_hash_default + $storage_device_hash
   package { $storage_package:

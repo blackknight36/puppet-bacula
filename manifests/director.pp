@@ -9,7 +9,7 @@
 #
 # === Copyright
 #
-# Copyright 2018 Michael Watters
+# Copyright 2020 Michael Watters
 #
 # === License
 #
@@ -78,6 +78,7 @@ class bacula::director (
   String $volume_retention_incr             = '10 Days',
   String $storage_default_mount             = '/mnt/bacula',
   Integer $max_concurrent_jobs              = 5,
+  Boolean $use_puppet_certs                 = true,
   ) {
 
   include 'bacula::common'
@@ -85,6 +86,10 @@ class bacula::director (
 
   package { $director_package:
     ensure => installed,
+  }
+
+  if $use_puppet_certs {
+    include 'bacula::ssl::puppet'
   }
 
   if $clients {
