@@ -55,7 +55,7 @@ class bacula::director (
   String $pid_dir                           = $var_dir,
   Optional[String] $plugin_dir              = '/usr/lib64/bacula',
   String $working_dir                       = $var_dir,
-  String $storage_server                    = "bacula.${facts['domain']}",
+  String $storage_server                    = $director_server,
   Array[String] $tls_allowed_cn             = [],
   Optional[String] $tls_ca_cert_dir         = undef,
   String $tls_ca_cert                       = "${var_dir}/ssl/certs/ca.pem",
