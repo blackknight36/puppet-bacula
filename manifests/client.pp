@@ -138,8 +138,8 @@ class bacula::client (
   file { 'bacula-fd.conf':
     ensure    => file,
     path      => $bacula_fd_conf,
-    owner     => $operatingsystem ? { windows => 'Administrator', default => 'bacula'},
-    group     => $operatingsystem ? { windows => 'Administrators', default => 'bacula'},
+    owner     => $facts['os']['name'] ? { windows => 'Administrator', default => 'bacula'},
+    group     => $facts['os']['name'] ? { windows => 'Administrators', default => 'bacula'},
     mode      => '0640',
     content   => template('bacula/bacula-fd.conf.erb'),
     require   => Package[$client_package],
@@ -188,7 +188,7 @@ class bacula::client (
       require   => Package[$client_package],
     }
     exec { 'create_keypair':
-      command     => "openssl genrsa -out /tmp/private.key 4096 && openssl req -new -key /tmp/private.key -x509 -out /tmp/public.crt -subj '/C=XX/ST=unknown/L=puppet-bacula/O=Bacula Backup/OU=backup/CN=${::fqdn}' && cat /tmp/private.key /tmp/public.crt >$pki_keypair && chmod 0400 $pki_keypair && rm /tmp/private.key /tmp/public.crt /tmp/.rnd",
+      command     => "openssl genrsa -out /tmp/private.key 4096 && openssl req -new -key /tmp/private.key -x509 -out /tmp/public.crt -subj '/C=XX/ST=unknown/L=puppet-bacula/O=Bacula Backup/OU=backup/CN=${trusted['certname']}' && cat /tmp/private.key /tmp/public.crt >$pki_keypair && chmod 0400 $pki_keypair && rm /tmp/private.key /tmp/public.crt /tmp/.rnd",
       creates     => "$pki_keypair",
       environment => 'RANDFILE=/tmp/.rnd',
       notify      => Service['bacula-fd'],
