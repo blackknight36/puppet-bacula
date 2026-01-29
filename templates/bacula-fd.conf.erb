@@ -8,7 +8,7 @@
 Director {
   Name = "<%= @director_server -%>:director"
   Password = "<%= @director_password -%>"
-  TLS Enable =  <%= @use_tls ? 'yes':'no' %>
+  TLS Enable = <%= @use_tls ? 'yes':'no' %>
   TLS Require = <%= @tls_require ? 'yes':'no' %>
   TLS Verify Peer = <%= @tls_verify_peer ? 'yes':'no' %>
 <% @tls_allowed_cn.each do |allowed_cn| -%>
