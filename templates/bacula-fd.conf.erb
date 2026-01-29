@@ -35,7 +35,7 @@ FileDaemon {
 <% end -%>
   PID Directory = <%= @pid_dir %>
   Maximum Concurrent Jobs = 3
-  TLS Enable =  <%= @use_tls ? 'yes':'no' %>
+  TLS Enable = <%= @use_tls ? 'yes':'no' %>
   TLS Require = <%= @tls_require ? 'yes':'no' %>
 <% if @tls_ca_cert -%>
   TLS CA Certificate File = <%= @tls_ca_cert %>
